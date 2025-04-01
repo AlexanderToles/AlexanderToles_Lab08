@@ -8,7 +8,7 @@ class Matrix {
     public:
     int size;
     string name;
-    std::vector<std::vector<int> > matrix;
+    std::vector<std::vector<string> > matrix;
 
     int getSize(){
         return size;
@@ -29,9 +29,9 @@ class Matrix {
 
 void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
     int linePos = 0;
-    std::vector<std::vector<int> > tempMatrix;
+    std::vector<std::vector<string> > tempMatrix;
     for(int i = start;i < end; i++){
-        vector<int> row;
+        vector<string> row;
         cout << lines[i] << "\n";
         std::regex pattern("\\d+");  // Create a named regex variable
         auto searchBegin = std::sregex_iterator(lines[i].begin(), lines[i].end(), pattern);
@@ -39,10 +39,10 @@ void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
         for (sregex_iterator j = searchBegin; j != searchEnd; ++j)
         {
             smatch match = *j;
-            int match_int = stoi(match.str());
-            row.insert(row.begin(),match_int);
+            string match_str = (match.str());
+            row.push_back(match_str);
         }
-        tempMatrix.insert(tempMatrix.begin(),row);
+        tempMatrix.push_back(row);
     }
     inMatrix.matrix = tempMatrix;
 
