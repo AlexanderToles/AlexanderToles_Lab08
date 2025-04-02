@@ -25,6 +25,22 @@ class Matrix {
     void setValue(int i, int j, int val){
         matrix[i][j] = val;    
     }
+    int sumMajorDiagonal(){
+        int sum = 0;
+        for(int i = 0; i < size; i++){
+            sum+=matrix[i][i];
+        }
+        cout << sum << "\n";
+        return(sum);
+    }
+    int sumMinorDiagonal(){
+        int sum = 0;
+        for(int i = size; i >= 0; i--){
+            sum+=matrix[i][i];
+        }
+        cout << sum << "\n";
+        return(sum);
+    }
     Matrix operator+(const Matrix &other){
         Matrix result;
         result.size = size;
@@ -118,6 +134,8 @@ void scanFile(string fileName){
         matrixB.printMatrix();
         (matrixA + matrixB).printMatrix();
         (matrixA * matrixB).printMatrix();
+        matrixA.sumMajorDiagonal();
+        matrixA.sumMinorDiagonal();
 
 
     }
