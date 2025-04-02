@@ -1,3 +1,11 @@
+//  EECS 348 LAB 08
+//  MATRIX OPERATIONS
+//  INPUT: Test file, menu selection
+//  OUTPUT: Menu, matricies
+//  ALEXANDER TOLES      
+//  APRIL 01 2025
+//  COLLABORATORS: Stack Overflow (Line 40) 
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -20,43 +28,56 @@ class Matrix { //matrix class
 
     void printMatrix(){
         cout << name << ":\n"; //print the name of the matrix
-        vector<int> max;
-        for(int i = 0; i < size; i++){
-            max.push_back(*max_element(matrix[i].begin(),matrix[i].end()));
+
+        //This section takes the maximum value of the matrix, finds the number of digits
+        //and then adds leading zeros to the rest of the numbers 
+
+        vector<int> max; //create a vector to store the max of each row
+        for(int i = 0; i < size; i++){ //iterate over rows
+            max.push_back(*max_element(matrix[i].begin(),matrix[i].end())); //get the max element, add to max vector
         }
-        int width = *max_element(max.begin(),max.end());
+
+        int width = *max_element(max.begin(),max.end()); //number of digits in max value
 
     
-        for(int i = 0; i < size; i++){
+        for(int i = 0; i < size; i++){ //for ever column in every row
             for(int j = 0; j < size; j++){
+
+                //The following print command is based off of this stack overflow answer
+                //https://stackoverflow.com/questions/530614/print-leading-zeros-with-c-output-operator
+
+                //The following code sets the width of the output to the width of the maximum value, filling every
+                //nubmer in between with 0's
+
                 cout << internal << setw(to_string(width).size()) << setfill('0') << matrix[i][j] << " ";
+                
             }
             cout << "\n";
         }
     }
     
-    Matrix operator+(const Matrix &other){
-        Matrix result;
+    Matrix operator+(const Matrix &other){ //overload addition
+        Matrix result; //initialize the result matrix
         result.size = size;
         result.name = "Result";
-        result.matrix.resize(size, vector<int>(size, 0));
-        for(int i = 0; i < size; i++){
+        result.matrix.resize(size, vector<int>(size, 0)); //make empty matrix of size N
+        for(int i = 0; i < size; i++){ //iterate through every element
             for(int j = 0; j < size; j++){
-                int sum = matrix[i][j] + other.matrix[i][j];
+                int sum = matrix[i][j] + other.matrix[i][j]; //add the elements of both matrixies together, append it to the result matrix
                 result.matrix[i][j] = sum;
             }
         }
         return result;
     }
-    Matrix operator*(const Matrix &other){
-        Matrix result;
+    Matrix operator*(const Matrix &other){ //overload multiplication
+        Matrix result; //initialize result matrix
         result.size = size;
         result.name = "Result";
         result.matrix.resize(size, vector<int>(size, 0));
         for(int i = 0; i < size; i++){
-            for(int j = 0; j < size; j++){
-                int sum = 0;
-                for(int k = 0; k < size; k++){
+            for(int j = 0; j < size; j++){ //multply rows against columns, sum the results, and append result matrix
+                int sum = 0; 
+                for(int k = 0; k < size; k++){ 
                     sum+=matrix[i][k]*other.matrix[k][j];
                 }
                 result.matrix[i][j] = sum;
@@ -66,7 +87,7 @@ class Matrix { //matrix class
     }
     int sumMajorDiagonal(){
         int sum = 0;
-        for(int i = 0; i < size; i++){
+        for(int i = 0; i < size; i++){ //go through every diagonal entry, summing them together
             sum+=matrix[i][i];
         }
         cout << sum << "\n";
@@ -74,8 +95,8 @@ class Matrix { //matrix class
     }
     int sumMinorDiagonal(){
         int sum = 0;
-        for(int i = size-1; i >= 0; i--){
-            sum+=matrix[i][i];
+        for(int i = size-1; i >= 0; i--){ //start at last column and move backward
+            sum+=matrix[size-1-i][i]; //iterate over each row, picking the i column
         }
         cout << sum << "\n";
         return(sum);
@@ -88,7 +109,7 @@ class Matrix { //matrix class
         
     }
     void swapCols(int c1, int c2){
-        for(int i = 0; i < size; i++){
+        for(int i = 0; i < size; i++){ //similar to swapRow, but need to iterate over each row
             int tempval = matrix[i][c1];
             matrix[i][c1] = matrix[i][c2];
             matrix[i][c2] = tempval;
@@ -102,28 +123,29 @@ class Matrix { //matrix class
 };
 
 void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
-    int linePos = 0;
-    std::vector<std::vector<int> > tempMatrix;
-    for(int i = start;i < end; i++){
+    std::vector<std::vector<int> > tempMatrix; //initialize temp matrix we add values to
+    for(int i = start;i < end; i++){//go from matrixA start pos to matrixB start position
         vector<int> row;
-        //cout << lines[i] << "\n";
         std::regex pattern("\\d+");  // Create a named regex variable
-        auto searchBegin = std::sregex_iterator(lines[i].begin(), lines[i].end(), pattern);
+
+        //iterate through each regex match, adding them to the row
+
+        auto searchBegin = std::sregex_iterator(lines[i].begin(), lines[i].end(), pattern); 
         auto searchEnd = std::sregex_iterator();
         for (sregex_iterator j = searchBegin; j != searchEnd; ++j)
         {
             smatch match = *j;
-            int match_int = stoi(match.str());
-            row.push_back(match_int);
+            int match_int = stoi(match.str()); //conver the match to a string object, then to a integer
+            row.push_back(match_int); //add the match to the row
         }
-        tempMatrix.push_back(row);
+        tempMatrix.push_back(row); //add the row to the matrix
     }
-    inMatrix.matrix = tempMatrix;
+    inMatrix.matrix = tempMatrix; //set the input matrix to the temp matrix
 
 }
 
 void printMenu(Matrix matrixA,Matrix matrixB){
-    while(true){
+    while(true){ //loop to handle exit
         int choice;
     
         cout << "1) Add matricies" << "\n";
@@ -132,11 +154,11 @@ void printMenu(Matrix matrixA,Matrix matrixB){
         cout << "4) Swap rows" << "\n";
         cout << "5) Swap columns" << "\n";
         cout << "6) Set element" << "\n";
-        cout << "7) Break" << "\n";
+        cout << "7) Exit" << "\n";
 
-        cin >> choice;
+        cin >> choice; //get choice from user
 
-        switch(choice){
+        switch(choice){ //call respective functions
             case 1:
                 (matrixA + matrixB).printMatrix();
                 break;
@@ -144,12 +166,14 @@ void printMenu(Matrix matrixA,Matrix matrixB){
                 (matrixA * matrixB).printMatrix();
                 break;
             case 3:
+                cout << "Major: ";
                 matrixA.sumMajorDiagonal();
+                cout << "Minor: ";
                 matrixA.sumMinorDiagonal();
                 break;
             case 4:
                 
-                while(true){
+                while(true){ //loop to prompt user until in-bounds selection is chosen
                     int r1,r2;
                     cout << "Enter first row: ";
                     cin >> r1;
@@ -166,7 +190,7 @@ void printMenu(Matrix matrixA,Matrix matrixB){
                 break;
             case 5:
                 
-                while(true){
+                while(true){ //loop to prompt user until in-bounds selection is chosen
                     int c1,c2;
                     cout << "Enter first column: ";
                     cin >> c1;
@@ -183,7 +207,7 @@ void printMenu(Matrix matrixA,Matrix matrixB){
                 break;
             case 6:
                 
-                while(true){
+                while(true){ //loop to prompt user until in-bounds selection is chosen
                     int row,col,val;
                     cout << "Enter row: ";
                     cin >> row;
@@ -201,7 +225,7 @@ void printMenu(Matrix matrixA,Matrix matrixB){
                 }
                 break;
             case 7:
-                return;
+                return; //return from function, exiting program
             default: 
                 cout << "Invalid selection";
                 printMenu(matrixA,matrixB);
@@ -251,6 +275,9 @@ void scanFile(string fileName){
             }
 
         }
+
+        matrixA.printMatrix();
+        matrixB.printMatrix();
         printMenu(matrixA,matrixB);
     }
     else {
