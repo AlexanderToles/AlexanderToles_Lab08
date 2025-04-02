@@ -22,25 +22,7 @@ class Matrix {
             cout << "\n";
         }
     }
-    void setValue(int i, int j, int val){
-        matrix[i][j] = val;    
-    }
-    int sumMajorDiagonal(){
-        int sum = 0;
-        for(int i = 0; i < size; i++){
-            sum+=matrix[i][i];
-        }
-        cout << sum << "\n";
-        return(sum);
-    }
-    int sumMinorDiagonal(){
-        int sum = 0;
-        for(int i = size; i >= 0; i--){
-            sum+=matrix[i][i];
-        }
-        cout << sum << "\n";
-        return(sum);
-    }
+    
     Matrix operator+(const Matrix &other){
         Matrix result;
         result.size = size;
@@ -69,6 +51,44 @@ class Matrix {
             }
         }
         return result;
+    }
+    void setValue(int i, int j, int val){
+        matrix[i][j] = val;    
+    }
+    int sumMajorDiagonal(){
+        int sum = 0;
+        for(int i = 0; i < size; i++){
+            sum+=matrix[i][i];
+        }
+        cout << sum << "\n";
+        return(sum);
+    }
+    int sumMinorDiagonal(){
+        int sum = 0;
+        for(int i = size-1; i >= 0; i--){
+            sum+=matrix[i][i];
+        }
+        cout << sum << "\n";
+        return(sum);
+    }
+    void swapRows(int r1, int r2){
+        if((r1 < size-1 && r1 >= 0)&&(r2 < size-1 && r2 >= 0)){
+            vector<int> tempRow = matrix[r1];
+            matrix[r1] = matrix[r2];
+            matrix[r2] = tempRow;
+            printMatrix();
+        }
+        
+    }
+    void swapCols(int c1, int c2){
+        if((c1 < size-1 && c1 >= 0)&&(c2 < size-1 && c2 >= 0)){
+        for(int i = 0; i < size; i++){
+            int tempval = matrix[i][c1];
+            matrix[i][c1] = matrix[i][c2];
+            matrix[i][c2] = tempval;
+        }
+        }
+        printMatrix();
     }
 };
 
@@ -136,6 +156,8 @@ void scanFile(string fileName){
         (matrixA * matrixB).printMatrix();
         matrixA.sumMajorDiagonal();
         matrixA.sumMinorDiagonal();
+        matrixA.swapRows(0,2);
+        matrixA.swapCols(0,1);
 
 
     }
