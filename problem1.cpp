@@ -38,6 +38,22 @@ class Matrix {
         }
         return result;
     }
+    Matrix operator*(const Matrix &other){
+        Matrix result;
+        result.size = size;
+        result.name = "Result";
+        result.matrix.resize(size, vector<int>(size, 0));
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                int sum = 0;
+                for(int k = 0; k < size; k++){
+                    sum+=matrix[i][k]*other.matrix[k][j];
+                }
+                result.matrix[i][j] = sum;
+            }
+        }
+        return result;
+    }
 };
 
 void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
@@ -101,6 +117,7 @@ void scanFile(string fileName){
         matrixA.printMatrix();
         matrixB.printMatrix();
         (matrixA + matrixB).printMatrix();
+        (matrixA * matrixB).printMatrix();
 
 
     }
