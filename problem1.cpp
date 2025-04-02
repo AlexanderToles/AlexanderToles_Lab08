@@ -123,73 +123,91 @@ void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
 }
 
 void printMenu(Matrix matrixA,Matrix matrixB){
-    int choice;
+    while(true){
+        int choice;
     
-    cout << "1) Add matricies" << "\n";
-    cout << "2) Multiply matricies" << "\n";
-    cout << "3) Sum diagonals" << "\n";
-    cout << "4) Swap rows" << "\n";
-    cout << "5) Swap columns" << "\n";
-    cout << "6) Set element" << "\n";
+        cout << "1) Add matricies" << "\n";
+        cout << "2) Multiply matricies" << "\n";
+        cout << "3) Sum diagonals" << "\n";
+        cout << "4) Swap rows" << "\n";
+        cout << "5) Swap columns" << "\n";
+        cout << "6) Set element" << "\n";
+        cout << "7) Break" << "\n";
 
-    cin >> choice;
+        cin >> choice;
 
-    switch(choice){
-        case 1:
-            (matrixA + matrixB).printMatrix();
-        case 2:
-            (matrixA * matrixB).printMatrix();
-        case 3:
-            matrixA.sumMajorDiagonal();
-            matrixA.sumMinorDiagonal();
-        case 4:
-            int r1,r2;
-            cout << "Enter first row: ";
-            cin >> r1;
-            cout << "Enter second row: ";
-            cin >> r2;
-            if((r1 < matrixA.size-1 && r1 >= 0)&&(r2 < matrixA.size-1 && r2 >= 0)){
-                matrixA.swapRows(r1,r2);
-            }
-            else{
-                cout << "Selection out of bounds.";
+        switch(choice){
+            case 1:
+                (matrixA + matrixB).printMatrix();
+                break;
+            case 2:
+                (matrixA * matrixB).printMatrix();
+                break;
+            case 3:
+                matrixA.sumMajorDiagonal();
+                matrixA.sumMinorDiagonal();
+                break;
+            case 4:
+                
+                while(true){
+                    int r1,r2;
+                    cout << "Enter first row: ";
+                    cin >> r1;
+                    cout << "Enter second row: ";
+                    cin >> r2;
+                    if((r1 < matrixA.size && r1 >= 0)&&(r2 < matrixA.size && r2 >= 0)){
+                        matrixA.swapRows(r1,r2);
+                        break;
+                    }
+                    else{
+                        cout << "Selection out of bounds.";
+                    }
+                }
+                break;
+            case 5:
+                
+                while(true){
+                    int c1,c2;
+                    cout << "Enter first column: ";
+                    cin >> c1;
+                    cout << "Enter second column: ";
+                    cin >> c2;
+                    if((c1 < matrixA.size && c1 >= 0)&&(c2 < matrixA.size && c2 >= 0)){
+                    matrixA.swapCols(c1,c2);
+                    break;
+                    }
+                    else{
+                        cout << "Selection out of bounds.";
+                    }
+                }
+                break;
+            case 6:
+                
+                while(true){
+                    int row,col,val;
+                    cout << "Enter row: ";
+                    cin >> row;
+                    cout << "Enter column: ";
+                    cin >> col;
+                    cout << "Enter value: ";
+                    cin >> val;
+                    if((row < matrixA.size && row >= 0)&&(col < matrixA.size && col >= 0)){
+                    matrixA.setValue(row,col,val);
+                    break;
+                    }
+                    else{
+                        cout << "Selection out of bounds.";
+                    }
+                }
+                break;
+            case 7:
+                return;
+            default: 
+                cout << "Invalid selection";
                 printMenu(matrixA,matrixB);
-            }
-        case 5:
-            int c1,c2;
-            cout << "Enter first column: ";
-            cin >> c1;
-            cout << "Enter second column: ";
-            cin >> c2;
-            if((c1 < matrixA.size-1 && c1 >= 0)&&(c2 < matrixA.size-1 && c2 >= 0)){
-                matrixA.swapCols(c1,c2);
-            }
-            else{
-                cout << "Selection out of bounds.";
-                printMenu(matrixA,matrixB);
-            }
-            
-        case 6:
-            int row,col,val;
-            cout << "Enter row: ";
-            cin >> row;
-            cout << "Enter column: ";
-            cin >> col;
-            cout << "Enter value: ";
-            cin >> val;
-            if((row < matrixA.size-1 && row >= 0)&&(col < matrixA.size-1 && col >= 0)){
-                matrixA.setValue(row,col,val);
-            }
-            else{
-                cout << "Selection out of bounds.";
-                printMenu(matrixA,matrixB);
-            }
-            
-        default: 
-            cout << "Invalid selection";
-            printMenu(matrixA,matrixB);
+                break;
+        }
     }
-    
 }
 
 
@@ -233,7 +251,7 @@ void scanFile(string fileName){
             }
 
         }
-
+        printMenu(matrixA,matrixB);
     }
     else {
         cout << "Error: Failed to open file.\n";
