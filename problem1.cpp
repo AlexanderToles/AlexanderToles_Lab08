@@ -8,12 +8,12 @@ class Matrix {
     public:
     int size;
     string name;
-    std::vector<std::vector<string> > matrix;
+    std::vector<std::vector<int> >matrix;
 
     int getSize(){
         return size;
     }
-    int printMatrix(){
+    void printMatrix(){
         cout << name << ":\n";
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
@@ -25,22 +25,35 @@ class Matrix {
     void setValue(int i, int j, int val){
         matrix[i][j] = val;    
     }
+    Matrix operator+(const Matrix &other){
+        Matrix result;
+        result.size = size;
+        result.name = "Result";
+        result.matrix.resize(size, vector<int>(size, 0));
+        for(int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++){
+                int sum = matrix[i][j] + other.matrix[i][j];
+                result.matrix[i][j] = sum;
+            }
+        }
+        return result;
+    }
 };
 
 void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
     int linePos = 0;
-    std::vector<std::vector<string> > tempMatrix;
+    std::vector<std::vector<int> > tempMatrix;
     for(int i = start;i < end; i++){
-        vector<string> row;
-        cout << lines[i] << "\n";
+        vector<int> row;
+        //cout << lines[i] << "\n";
         std::regex pattern("\\d+");  // Create a named regex variable
         auto searchBegin = std::sregex_iterator(lines[i].begin(), lines[i].end(), pattern);
         auto searchEnd = std::sregex_iterator();
         for (sregex_iterator j = searchBegin; j != searchEnd; ++j)
         {
             smatch match = *j;
-            string match_str = (match.str());
-            row.push_back(match_str);
+            int match_int = stoi(match.str());
+            row.push_back(match_int);
         }
         tempMatrix.push_back(row);
     }
@@ -79,7 +92,6 @@ void scanFile(string fileName){
                 if(lines[i] != ""){
                     int m2 = i+matrixA.size;
                     readMatrix(lines,i,m2,matrixA);
-                    cout << "\n";
                     readMatrix(lines,m2,m2+matrixB.size,matrixB);
                     break;
                 } 
@@ -88,6 +100,8 @@ void scanFile(string fileName){
         }
         matrixA.printMatrix();
         matrixB.printMatrix();
+        (matrixA + matrixB).printMatrix();
+
 
     }
     else {
