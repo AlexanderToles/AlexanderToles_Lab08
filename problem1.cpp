@@ -2,22 +2,36 @@
 #include <fstream>
 #include <string>
 #include <regex>
+#include <algorithm>
+#include <cmath>
+#include <iomanip>
 
 using namespace std;
-class Matrix {
-    public:
-    int size;
+
+class Matrix { //matrix class
+    public: 
+    int size; //initialize the size, name, and 2d vector
     string name;
     std::vector<std::vector<int> >matrix;
 
     int getSize(){
         return size;
     }
+
     void printMatrix(){
-        cout << name << ":\n";
+        cout << name << ":\n"; //print the name of the matrix
+        vector<int> max;
+        int lead;
+        int max_lead;
+        for(int i = 0; i < size; i++){
+            max.push_back(*max_element(matrix[i].begin(),matrix[i].end()));
+        }
+        int width = *max_element(max.begin(),max.end());
+
+    
         for(int i = 0; i < size; i++){
             for(int j = 0; j < size; j++){
-                cout << matrix[i][j] << " ";
+                cout << internal << setw(to_string(width).size()) << setfill('0') << matrix[i][j] << " ";
             }
             cout << "\n";
         }
@@ -51,9 +65,6 @@ class Matrix {
             }
         }
         return result;
-    }
-    void setValue(int i, int j, int val){
-        matrix[i][j] = val;    
     }
     int sumMajorDiagonal(){
         int sum = 0;
@@ -90,6 +101,10 @@ class Matrix {
         }
         printMatrix();
     }
+    void setValue(int i, int j, int val){
+        matrix[i][j] = val;
+        printMatrix();  
+    }
 };
 
 void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
@@ -114,35 +129,37 @@ void readMatrix(vector<string> lines,int start,int end, Matrix &inMatrix){
 }
 
 void scanFile(string fileName){
-    fstream inputFile;
-    inputFile.open(fileName, fstream::in);
-    if(inputFile.is_open()){
-
+    fstream inputFile; //declare file
+    inputFile.open(fileName, fstream::in); //open file, set it to read from file
+    if(inputFile.is_open()){ //check if file was opened successfully
+ 
         cout << "File opened successfully!\n";
 
         string line; //current line from file
         smatch match; //matches from regex search
         int linePos = 0; //current line position
-        vector<string> lines;
+        vector<string> lines; //vector to store all lines
         Matrix matrixA, matrixB; //create matrix
-        matrixA.name = "Matrix A";
+
+        matrixA.name = "Matrix A"; //initialize the two matricies
         matrixB.name = "Matrix B";
 
-        while(getline(inputFile,line)){
+        while(getline(inputFile,line)){ //go through each line in the file, and add it to the vector
             lines.push_back(line);
         }
 
-        for(int i = 0; i < lines.size(); i++){
+        for(int i = 0; i < lines.size(); i++){ //go through each line in the vector
             if(regex_search(lines[i],match,regex ("^\\d+")) && i==0){ //only want the number located in the first line
 
                 int size = stoi(match[0]); //convert string to integer
-                cout << "size: " << size << "\n";
-                matrixA.size = size;
+
+                matrixA.size = size; //set the size of the two matricies
                 matrixB.size = size;
             }
+
             else{
-                if(lines[i] != ""){
-                    int m2 = i+matrixA.size;
+                if(lines[i] != ""){ //read through lines until you hit the first matrix
+                    int m2 = i+matrixA.size; //set matrixB start position
                     readMatrix(lines,i,m2,matrixA);
                     readMatrix(lines,m2,m2+matrixB.size,matrixB);
                     break;
@@ -154,12 +171,6 @@ void scanFile(string fileName){
         matrixB.printMatrix();
         (matrixA + matrixB).printMatrix();
         (matrixA * matrixB).printMatrix();
-        matrixA.sumMajorDiagonal();
-        matrixA.sumMinorDiagonal();
-        matrixA.swapRows(0,2);
-        matrixA.swapCols(0,1);
-
-
     }
     else {
         cout << "Error: Failed to open file.\n";
